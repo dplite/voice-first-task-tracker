@@ -5,6 +5,7 @@ export default function TaskItem({ task, index, onToggle, onEdit, onDelete }) {
     <li className="task-row">
       <span className="task-index">{index + 1}.</span>
       <strong className="task-title">{task.title}</strong>
+      <span className="task-description">{task.description || '-'}</span>
       <span className="task-time">{task.time ? task.time : '-'}</span>
       <span className="task-status">({task.status})</span>
       <button onClick={() => onToggle(task.id)}>Toggle</button>

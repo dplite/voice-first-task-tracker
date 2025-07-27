@@ -208,11 +208,26 @@ li button:last-child {
 }
 
 .task-title {
-  min-width: 160px;
-  max-width: 220px;
+  min-width: 90px;
+  max-width: 160px;
   flex: 1;
   display: inline-block;
   text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.task-description {
+  min-width: 80px;
+  max-width: 80px;
+  display: inline-block;
+  text-align: left;
+  color: #666;
+  font-style: italic;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .task-time {
@@ -222,7 +237,7 @@ li button:last-child {
 }
 
 .task-status {
-  min-width: 90px;
+  min-width: 60px;
   text-align: center;
   display: inline-block;
 }
@@ -303,7 +318,7 @@ li button:last-child {
     padding: 0.7rem 0.2rem;
     gap: 0.5rem;
   }
-  .task-index, .task-title, .task-time, .task-status {
+  .task-index, .task-title, .task-description, .task-time, .task-status {
     min-width: 0;
     width: 100%;
     display: block;
