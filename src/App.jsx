@@ -60,7 +60,7 @@ function App() {
   // Handle complex voice commands via Gemini LLM backend
   const handleComplexCommand = async (transcript) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/llm', { transcript });
+      const res = await axios.post('https://voice-first-task-tracker-4.onrender.com/api/llm', { transcript });
       const data = res.data;
       if (data.intent === 'add' && Array.isArray(data.tasks)) {
         data.tasks.forEach(task => {
