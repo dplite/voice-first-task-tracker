@@ -5,10 +5,15 @@ export default function TaskList({ tasks, onToggle, onEdit, onDelete, filter }) 
   return (
     <ul>
       {tasks
-        .filter(task =>
-          task.title.toLowerCase().includes(filter.toLowerCase()) ||
-          task.description.toLowerCase().includes(filter.toLowerCase())
-        )
+        .filter(task => {
+          if (!filter) return true;
+          const filterLower = filter.toLowerCase();
+          return (
+            task.title.toLowerCase().includes(filterLower) ||
+            task.description.toLowerCase().includes(filterLower) ||
+            task.status.toLowerCase().includes(filterLower)
+          );
+        })
         .map((task, i) => (
           <TaskItem
             key={task.id}

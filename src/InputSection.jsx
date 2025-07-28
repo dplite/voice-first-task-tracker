@@ -16,6 +16,15 @@ export default function InputSection({ onAdd, filter, onFilterChange, onSimpleCo
         value={filter}
         onChange={e => onFilterChange(e.target.value)}
       />
+      {filter && (
+        <button 
+          className="clear-filter-btn" 
+          onClick={() => onFilterChange('')}
+          title="Clear filter"
+        >
+          ✕
+        </button>
+      )}
     </div>
   );
 } 

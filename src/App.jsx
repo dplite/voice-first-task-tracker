@@ -41,27 +41,52 @@ function App() {
 
   // Handle simple voice commands
   const handleSimpleCommand = (cmd) => {
+    console.log('Simple command received:', cmd);
     if (cmd.type === 'ADD_TASK_VOICE') {
       dispatch({
         type: 'ADD_TASK',
         payload: { id: uuidv4(), title: cmd.text, description: '' },
       });
     } else if (cmd.type === 'DELETE_TASK_VOICE') {
-      const task = state.tasks.find(t => t.title.toLowerCase().includes(cmd.text));
-      if (task) dispatch({ type: 'DELETE_TASK', payload: { id: task.id } });
+      const taskNumber = parseInt(cmd.text, 10);
+      if (!isNaN(taskNumber) && taskNumber > 0) {
+        const idx = taskNumber - 1;
+        if (state.tasks[idx]) {
+          console.log('Deleting task at index:', idx, 'task:', state.tasks[idx]);
+          dispatch({ type: 'DELETE_TASK', payload: { id: state.tasks[idx].id } });
+        } else {
+          console.log('Task not found at index:', idx);
+        }
+      } else {
+        console.log('Invalid task number:', cmd.text);
+      }
     } else if (cmd.type === 'EDIT_TASK_VOICE') {
       alert('Edit by voice not implemented in demo');
     } else if (cmd.type === 'TOGGLE_TASK_VOICE') {
-      const task = state.tasks.find(t => t.title.toLowerCase().includes(cmd.text));
-      if (task) dispatch({ type: 'TOGGLE_STATUS', payload: { id: task.id } });
+      const taskNumber = parseInt(cmd.text, 10);
+      if (!isNaN(taskNumber) && taskNumber > 0) {
+        const idx = taskNumber - 1;
+        if (state.tasks[idx]) {
+          console.log('Toggling task at index:', idx, 'task:', state.tasks[idx]);
+          dispatch({ type: 'TOGGLE_STATUS', payload: { id: state.tasks[idx].id } });
+        } else {
+          console.log('Task not found at index:', idx);
+        }
+      } else {
+        console.log('Invalid task number:', cmd.text);
+      }
     }
   };
 
   // Handle complex voice commands via Gemini LLM backend
   const handleComplexCommand = async (transcript) => {
     try {
-      const res = await axios.post('https://voice-first-task-tracker-4.onrender.com/api/llm', { transcript });
+      console.log('Sending to LLM:', transcript);
+      const res = await axios.post('http://localhost:5000/api/llm', { transcript });
       const data = res.data;
+      console.log('LLM response:', data);
+      
+      // Handle both simple and complex command responses
       if (data.intent === 'add' && Array.isArray(data.tasks)) {
         data.tasks.forEach(task => {
           dispatch({
@@ -70,9 +95,14 @@ function App() {
           });
         });
       } else if (data.intent === 'delete' && typeof data.taskNumber === 'number') {
+        console.log('Delete command - taskNumber:', data.taskNumber, 'total tasks:', state.tasks.length);
         const idx = data.taskNumber - 1;
+        console.log('Calculated index:', idx);
         if (state.tasks[idx]) {
+          console.log('Deleting task:', state.tasks[idx]);
           dispatch({ type: 'DELETE_TASK', payload: { id: state.tasks[idx].id } });
+        } else {
+          console.log('Task not found at index:', idx);
         }
       } else if (data.intent === 'edit' && typeof data.taskNumber === 'number' && data.updates) {
         const idx = data.taskNumber - 1;
@@ -94,10 +124,14 @@ function App() {
         if (state.tasks[idx]) {
           dispatch({ type: 'TOGGLE_STATUS', payload: { id: state.tasks[idx].id } });
         }
+      } else if (data.intent === 'filter' && typeof data.filterText === 'string') {
+        dispatch({ type: 'SET_FILTER', payload: data.filterText });
       } else {
+        console.log('Unknown command data:', data);
         alert('Sorry, could not understand the command.');
       }
     } catch (err) {
+      console.error('Error processing command:', err);
       alert('Error processing command: ' + err.message);
     }
   };

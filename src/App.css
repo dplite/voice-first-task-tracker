@@ -152,6 +152,24 @@
   max-width: 300px;
 }
 
+.clear-filter-btn {
+  height: 40px;
+  width: 40px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f3f3f3;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-filter-btn:hover {
+  background: #e0e7ff;
+}
+
 ul {
   list-style: none;
   padding: 0;

@@ -77,5 +77,9 @@ function parseSimpleCommand(transcript) {
   if (t.startsWith('toggle task')) {
     return { type: 'TOGGLE_TASK_VOICE', text: t.replace('toggle task', '').trim() };
   }
+  // For filter commands, always use LLM to better understand intent
+  if (t.includes('filter') || t.includes('show') || t.includes('find') || t.includes('pending') || t.includes('progress') || t.includes('completed')) {
+    return null; // Let LLM handle all filter commands
+  }
   return null;
 } 
